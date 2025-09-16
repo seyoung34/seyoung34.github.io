@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <div>
-        <h1>재민아 안녕 히히</h1>
+        <h1>해은아 안녕</h1>
       </div>
     </>
   )
