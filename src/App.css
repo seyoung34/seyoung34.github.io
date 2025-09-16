@@ -83,7 +83,8 @@ h1:hover {
 }
 
 body {
-  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #fbc2eb);
-  background-size: 400% 400%;
-  animation: gradientMove 10s ease infinite;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fad0c4, #ffd1ff);
 }
