@@ -52,9 +52,9 @@ function App() {
           color: "#ff6f61",
         }}
       >
-        짜파게티 냠
+        예원아 힘내!!!
       </h1>
-      <img src="/짜파게티파김치.jpg" alt="짜파게티" />
+      {/* <img src="/짜파게티파김치.jpg" alt="짜파게티" /> */}
     </div>
   );
 }
