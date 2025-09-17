@@ -52,8 +52,9 @@ function App() {
           color: "#ff6f61",
         }}
       >
-        해은아 안녕 ✨
+        짜파게티 냠
       </h1>
+      <img src="/짜파게티파김치.jpg" alt="짜파게티" />
     </div>
   );
 }
