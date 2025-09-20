@@ -8,6 +8,7 @@ function App() {
 
   useEffect(() => {
     const move = () => {
+
       setPos((prev) => {
         const newX = prev.x + vel.dx;
         const newY = prev.y + vel.dy;
@@ -52,9 +53,12 @@ function App() {
           color: "#ff6f61",
         }}
       >
-        예원아 힘내!!!
+        경민아 안녕
       </h1>
       {/* <img src="/짜파게티파김치.jpg" alt="짜파게티" /> */}
+
+      {/* <button onClick={() => alert("hi")}>클릭해보세용</button> */}
+
     </div>
   );
 }
