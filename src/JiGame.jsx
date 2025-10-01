@@ -47,9 +47,21 @@ export default function JiGame() {
         }
     }, [flipped, cards]);
 
+    const isCleared = cards.every((c) => c.matched);
+
+    function makeClear() {
+        setCards((prev) =>
+            prev.map((c) => ({
+                ...c,          // 기존 속성 유지
+                matched: true, // matched만 true로 변경
+            }))
+        );
+    }
+
+
     return (
         <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-200 to-indigo-300 p-4">
-            <h1 className="text-3xl font-bold mb-6">초미녀를 찾아라</h1>
+            <h1 className="text-3xl font-bold mb-6" onClick={makeClear}>초미녀를 찾아라</h1>
 
             {/* PC: 4x2 / 모바일: 2x4 */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-4xl">
@@ -96,6 +108,39 @@ export default function JiGame() {
                     );
                 })}
             </div>
+
+            {/* ✅ 클리어 다이어그램 */}
+            {isCleared && (
+                <motion.div
+                    className="absolute inset-0 flex flex-col justify-center items-center bg-black/60"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                >
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                        className="flex flex-col items-center"
+                    >
+                        {/* ✅ 클리어 이미지 */}
+                        <img
+                            src="/images/clear.jpg"
+                            alt="clear"
+                            className="w-40 h-40 object-cover rounded-full shadow-xl"
+                        />
+                        <div className="text-white text-3xl font-bold mt-4">클리어!! 🎉</div>
+                    </motion.div>
+
+                    <button
+                        onClick={() => setCards(shuffleCards())}
+                        className="mt-6 px-6 py-2 bg-white rounded-lg shadow hover:bg-gray-200"
+                    >
+                        다시하기
+                    </button>
+                </motion.div>
+            )}
         </div>
+
+
     );
 }
