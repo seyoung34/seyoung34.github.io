@@ -2,6 +2,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import ForJang from "./ForJang";
+import JiGame from "./JiGame";
+
 
 export default function App() {
 
@@ -12,7 +14,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/ForJang" element={<ForJang />}></Route>
-          {/* <Route path="/JiGame" element={<Sub2 />}></Route> */}
+          <Route path="/JiGame" element={<JiGame />}></Route>
         </Routes>
       </div>
 
