@@ -128,7 +128,7 @@ export default function JiGame() {
                             alt="clear"
                             className="w-40 h-40 object-cover rounded-full shadow-xl"
                         />
-                        <div className="text-white text-3xl font-bold mt-4">클리어!! 🎉</div>
+                        <div className="text-white text-3xl font-bold mt-4">다 맞췄띠</div>
                     </motion.div>
 
                     <button
