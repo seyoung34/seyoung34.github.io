@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+/* index.css */
+html,
+body {
+    height: 100%;
+    overflow-x: hidden;
+    /* 가로 스크롤 방지 */
+}
