@@ -1,9 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 @import "tailwindcss";
+
 
 /* index.css */
 html,
 body {
     height: 100%;
     overflow-x: hidden;
-    /* 가로 스크롤 방지 */
+    font-family: 'Jua', sans-serif;
+}
+
+@theme {
+    --font-sans: "Noto Sans KR", sans-serif;
+    --font-title: "Gugi", cursive;
+    --font-jua: "Jua", sans-serif;
+}
+
+
+@keyframes spinReel {
+    0% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-10%);
+    }
+
+    50% {
+        transform: translateY(10%);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.animate-spinReel {
+    animation: spinReel 0.3s linear infinite;
+}
+
+.animate-fall {
+    animation: fall 2.5s linear forwards;
+}
+
+/* 손잡이 회전 애니메이션 */
+.rotate-30 {
+    transform: rotate(30deg);
 }

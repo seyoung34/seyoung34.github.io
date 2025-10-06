@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import ForJang from "./ForJang";
 import JiGame from "./JiGame";
+import SlotMachine from "./SlotMashine";
+import MyMachine from "./MyMachine";
+
 
 
 export default function App() {
@@ -15,17 +18,21 @@ export default function App() {
           <Route path="/" element={<Home />}></Route>
           <Route path="/ForJang" element={<ForJang />}></Route>
           <Route path="/JiGame" element={<JiGame />}></Route>
+          <Route path="/SlotMachine" element={<SlotMachine />}></Route>
+          <Route path="/MyMachine" element={<MyMachine />}></Route>
         </Routes>
       </div>
-
     </Router>
   );
-}
+} 3
 
 function Home() {
   return (
-    <div className="flex h-full w-full justify-center items-center">
-      <div className="text-[10vh]">안녕하세용</div>
+    <div className="flex flex-col h-full w-full justify-center items-center">
+      <h1 className="">기본값 안녕하세요</h1>
+      <h1 className="font-title ">title 안녕하세요</h1>
+      <h1 className="font-sans ">sans 안녕하세요</h1>
+      <h1 className="font-jua ">jua 안녕하세요.</h1>
     </div>
   )
 }
