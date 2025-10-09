@@ -1,5 +1,5 @@
 //App.jsx
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import ForJang from "./ForJang";
 import JiGame from "./JiGame";

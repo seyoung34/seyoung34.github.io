@@ -99,7 +99,7 @@ export default function SlotMachine() {
 
 
     return (
-        <div className="relative flex flex-col w-screen items-center justify-center h-screen bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
+        <div className="relative flex flex-col w-screen h-[90vh] items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
             <div className="flex text-white text-4xl justify-center items-center w-1/2 h-1/6 border-8 rounded-2xl border-red-200 top-10 m-10">
                 {count}/3
             </div>

@@ -60,7 +60,7 @@ export default function JiGame() {
 
 
     return (
-        <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-200 to-indigo-300 p-4">
+        <div className="h-[90vh] w-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-200 to-indigo-300 p-4">
             <h1 className="text-3xl font-bold mb-6" onClick={makeClear}>초미녀를 찾아라</h1>
 
             {/* PC: 4x2 / 모바일: 2x4 */}
