@@ -97,6 +97,7 @@ export default function SlotMachine() {
 
     return (
         <div className="flex flex-col justify-center items-center h-[90vh] bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
+            <h1 className="">예원슬롯</h1>
             <div className="flex gap-4 mb-8">
                 {stopIndexes.map((idx, i) => (
                     <Reel key={i} spinning={spinning} stopIndex={idx} />

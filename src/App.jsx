@@ -5,6 +5,7 @@ import ForJang from "./ForJang";
 import JiGame from "./JiGame";
 import SlotMachine from "./SlotMashine";
 import MyMachine from "./MyMachine";
+import Machine from "./Machine"
 
 
 
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/JiGame" element={<JiGame />}></Route>
           <Route path="/SlotMachine" element={<SlotMachine />}></Route>
           <Route path="/MyMachine" element={<MyMachine />}></Route>
+          <Route path="/Machine" element={<Machine />}></Route>
         </Routes>
       </div>
     </Router>
@@ -33,6 +35,7 @@ function Home() {
       <h1 className="font-title ">title 안녕하세요</h1>
       <h1 className="font-sans ">sans 안녕하세요</h1>
       <h1 className="font-jua ">jua 안녕하세요.</h1>
+      <h1 className="">기본 글꼴</h1>
     </div>
   )
 }
