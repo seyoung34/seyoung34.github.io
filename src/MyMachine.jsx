@@ -73,7 +73,7 @@ function Reel({ spinning, stopIndex }) {
     );
 }
 
-export default function SlotMachine() {
+export default function MyMachine() {
     const [spinning, setSpinning] = useState(false);
     const [stopIndexes, setStopIndexes] = useState([0, 0, 0]);
     const [winner, setWinner] = useState(false);

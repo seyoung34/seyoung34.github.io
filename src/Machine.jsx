@@ -230,10 +230,3 @@ const SlotMachine = () => {
     );
 };
 
-// ==========================
-// 🎬 DOM에 렌더링 (CodePen 환경)
-// ==========================
-const rootElement = document.getElementById("root");
-if (rootElement) {
-    ReactDOM.render(<SlotMachine />, rootElement);
-}

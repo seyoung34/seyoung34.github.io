@@ -5,7 +5,6 @@ import ForJang from "./ForJang";
 import JiGame from "./JiGame";
 import SlotMachine from "./SlotMashine";
 import MyMachine from "./MyMachine";
-import Machine from "./Machine"
 
 
 
@@ -21,7 +20,6 @@ export default function App() {
           <Route path="/JiGame" element={<JiGame />}></Route>
           <Route path="/SlotMachine" element={<SlotMachine />}></Route>
           <Route path="/MyMachine" element={<MyMachine />}></Route>
-          <Route path="/Machine" element={<Machine />}></Route>
         </Routes>
       </div>
     </Router>
