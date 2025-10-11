@@ -7,34 +7,65 @@ const symbols = [
     { id: 4, img: "/images/ji4.jpg" },
 ];
 
+const ITEM_HEIGHT = 200;
+
 function Reel({ spinning, stopIndex }) {
     const [position, setPosition] = useState(0);
+    const [noTransition, setNoTransition] = useState(false);
 
     useEffect(() => {
         if (spinning) {
-            // 회전 중엔 translateY를 계속 증가시켜 무한 스크롤처럼 보이게
             const interval = setInterval(() => {
-                setPosition((prev) => (prev + 10) % (symbols.length * 200));
+                setPosition((prev) => {
+                    const next = prev + 10;
+                    const limit = symbols.length * ITEM_HEIGHT;
+
+                    // 🔥 부드러운 무한 루프 핵심 로직
+                    if (next >= limit) {
+                        // 순간적으로 transition 제거 후 위치 리셋
+                        setNoTransition(true);
+                        return next - limit;
+                    }
+                    return next;
+                });
             }, 20);
+
             return () => clearInterval(interval);
         } else {
-            // 멈출 때는 특정 이미지 위치로 정렬
-            setPosition(stopIndex * 200);
+            // 멈출 때는 해당 이미지 위치에 맞게 부드럽게 정렬
+            setNoTransition(false);
+            setPosition(stopIndex * ITEM_HEIGHT);
         }
     }, [spinning, stopIndex]);
 
+    // transition 동적으로 토글
+    const transitionClass = noTransition
+        ? ""
+        : "transition-transform duration-100 ease-linear";
+
     return (
-        <div className="relative w-48 h-[200px] overflow-hidden bg-black rounded-xl border-4 border-yellow-400">
+        <div className="relative w-48 h-[300px] overflow-hidden bg-black rounded-xl border-4 border-yellow-400">
             <div
-                className="transition-transform duration-700 ease-out"
+                className={`${transitionClass}`}
                 style={{
                     transform: `translateY(-${position}px)`,
                 }}
+                onTransitionEnd={() => {
+                    // transition 복귀
+                    if (noTransition) setNoTransition(false);
+                }}
             >
-                {/* 위아래로 반복되게 2배 배열 */}
+                {/* 이미지 세트 2배 렌더링 */}
                 {[...symbols, ...symbols].map((s, i) => (
-                    <div key={i} className="h-[200px] flex justify-center items-center">
-                        <img src={s.img} alt="symbol" className="w-32 h-32 object-cover" />
+                    <div
+                        key={i}
+                        className="h-[200px] flex justify-center items-center"
+                    >
+                        <img
+                            src={s.img}
+                            alt="symbol"
+                            className="w-32 h-32 object-cover"
+                        />
                     </div>
                 ))}
             </div>
@@ -52,7 +83,6 @@ export default function SlotMachine() {
         setSpinning(true);
         setWinner(false);
 
-        // 3개의 릴 각각 다른 타이밍으로 멈추기
         setTimeout(() => {
             const results = [
                 Math.floor(Math.random() * symbols.length),
@@ -62,7 +92,7 @@ export default function SlotMachine() {
             setStopIndexes(results);
             setSpinning(false);
             setWinner(results.every((v) => v === results[0]));
-        }, 2500);
+        }, 5000);
     };
 
     return (
