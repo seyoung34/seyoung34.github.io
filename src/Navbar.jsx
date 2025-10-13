@@ -12,6 +12,7 @@ export default function Navbar() {
                     <li><Link to="/JiGame" className="hover:text-blue-400">지예원게임</Link></li>
                     <li><Link to="/SlotMachine" className="hover:text-blue-400">슬롯머신</Link></li>
                     <li><Link to="/MyMachine" className="hover:text-blue-400">머신연습</Link></li>
+                    <li><Link to="/Three" className="hover:text-blue-400">Three</Link></li>
                 </ul>
             </div>
         </nav>
