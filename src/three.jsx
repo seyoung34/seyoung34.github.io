@@ -1,111 +1,171 @@
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
-import { useRef, useEffect, useState } from 'react';
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, useGLTF, Text3D, Environment, Html } from "@react-three/drei";
+import { Suspense, useRef, useState, useMemo, useEffect } from "react";
+import * as THREE from "three";
 
-function Box({
-    position = [0, 0, 0],
-    size = [1, 1, 1],
-    border = true,
-    color = "hotpink"
-}) {
-    const boxRef = useRef();
+
+function RobotModel({ position, index, minionRefs }) {
+    const { scene } = useGLTF("/donny/scene.gltf");
+    const minion = useRef();
+    const clonedScene = useMemo(() => scene.clone(true), [scene]);
+
+    const [direction, setDirection] = useState(() => ({
+        x: Math.random() < 0.5 ? -1 : 1,
+        z: Math.random() < 0.5 ? -1 : 1,
+    }));
+
+    const speed = 0.1;
+    const boundary = 25;
+    const minionRadius = 1.8;
+
+    useFrame(() => {
+        if (!minion.current) return;
+
+        const pos = minion.current.position;
+
+        // --- 이동 ---
+        pos.x += direction.x * speed;
+        pos.z += direction.z * speed;
+
+        // --- 벽 반사 ---
+        if (pos.x > boundary - minionRadius || pos.x < -boundary + minionRadius)
+            setDirection((d) => ({ ...d, x: -d.x }));
+        if (pos.z > boundary - minionRadius || pos.z < -boundary + minionRadius)
+            setDirection((d) => ({ ...d, z: -d.z }));
+
+        // --- 다른 minion들과 충돌 감지 ---
+        minionRefs.current.forEach((other, j) => {
+            if (!other || j === index) return;
+            const diff = new THREE.Vector3().subVectors(pos, other.position);
+            const distance = diff.length();
+            const minDistance = minionRadius * 2;
+
+            if (distance < minDistance) {
+                // 🟠 충돌 시, 방향 반전
+                setDirection((d) => ({ x: -d.x, z: -d.z }));
+
+                // 서로 약간 밀어내기
+                const push = diff.normalize().multiplyScalar(0.2);
+                pos.add(push);
+            }
+        });
+
+        // --- 방향에 따라 회전 ---
+        const angle = Math.atan2(direction.x, direction.z);
+        minion.current.rotation.y = angle;
+    });
 
     useEffect(() => {
-        if (border && boxRef.current) {
-            boxRef.current.children.forEach((child) => {
-                if (child.isLineSegments) boxRef.current.remove(child);
-            });
-
-            const edges = new THREE.EdgesGeometry(
-                new THREE.BoxGeometry(...size)
-            );
-            const line = new THREE.LineSegments(
-                edges,
-                new THREE.LineBasicMaterial({ color: 0xffffff })
-            );
-            boxRef.current.add(line);
-        }
-    }, [border, size]);
+        minionRefs.current[index] = minion.current;
+        return () => (minionRefs.current[index] = null);
+    }, [index]);
 
     return (
-        <mesh
-            ref={boxRef}
+        <primitive
+            ref={minion}
+            object={clonedScene}
+            scale={0.1}
             position={position}
             castShadow
             receiveShadow
-            rotation={[0, 0, 0]}
-        >
-            <boxGeometry args={size} />
-            <meshStandardMaterial
-                color={color}
-                metalness={0.3}
-                roughness={0.4}
-            />
-        </mesh>
+        />
     );
 }
 
-// ✅ d가 자동으로 바뀌는 컴포넌트
-function AnimatedBoxes() {
-    const [d, setD] = useState(2);
-    const [boxes, setBoxes] = useState([]);
 
-    // 매 프레임마다 d 값을 변경
-    const direction = useRef(1);
-    const speed = 0.02;
 
-    useFrame(() => {
-        setD(prev => {
-            let next = prev + speed * direction.current;
+function TextModel({ position, char }) {
+    const textRef = useRef();
 
-            if (next > 4) direction.current = -1; // 확장 → 축소 방향 반전
-            if (next < 1) direction.current = 1;  // 축소 → 확장 방향 반전
+    useFrame((state) => {
+        const { x, y } = state.pointer;
+        const clampedX = THREE.MathUtils.clamp(x, -1, 1);
+        const clampedY = THREE.MathUtils.clamp(y, -1, 1);
 
-            return next;
-        });
+        // 마우스 기반으로 텍스트 위치 부드럽게 이동
+        textRef.current.position.x = position[0] + clampedX * 2;
+        textRef.current.position.y = position[1] + clampedY * 2;
     });
 
-    // d가 바뀔 때마다 boxes 재생성
-    useEffect(() => {
-        const temp = [];
-        for (let x = -d; x <= d; x += d) {
-            for (let y = -d; y <= d; y += d) {
-                for (let z = -d; z <= d; z += d) {
-                    temp.push([x, y, z]);
-                }
-            }
-        }
-        setBoxes(temp);
-    }, [d]);
+    return (
+        <Text3D
+            ref={textRef}
+            font="/BM JUA_Regular.json"
+            size={2}
+            height={0.4}
+            curveSegments={12}
+            bevelEnabled
+            position={position}
+            bevelThickness={0.05}
+            bevelSize={0.02}
+            bevelOffset={0}
+            bevelSegments={3}
+        >
+            {char}
+            <meshStandardMaterial color="hotpink" metalness={0.2} roughness={0.4} />
+        </Text3D>
+    );
+}
 
-    return boxes.map((pos, i) => (
-        <Box key={i} position={pos} color={`hsl(${(pos[0] + 2) * 60}, 70%, 60%)`} />
-    ));
+function BgmPlayer() {
+    return (
+        <audio
+            src="/bgm/minions_bananasong.mp3"   // ✅ public 폴더 기준 경로
+            autoPlay
+            loop
+            controls={false}            // 🎧 숨기고 싶을 때 false
+            id="bgm"
+        />
+    );
 }
 
 export default function ThreeScene() {
-    return (
-        <div className="w-full h-[90vh] bg-black">
-            <Canvas shadows camera={{ position: [5, 5, 10], fov: 80 }}>
-                <color attach="background" args={["#111"]} />
-                <axesHelper args={[5]} />
+    const minionRefs = useRef([]);
+    const posList = [
+        [-8, 0, 0],
+        [0, 0, 0],
+        [8, 0, 0],
+        [-8, 0, -8],
+        [0, 0, -8],
+        [8, 0, -8],
+    ];
 
-                {/* 바닥 */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4, 0]} receiveShadow>
-                    <planeGeometry args={[20, 20]} />
-                    <meshStandardMaterial color="white" />
+    return (
+        <div className="relative w-full h-[90vh] bg-black">
+            <BgmPlayer />
+            <Canvas shadows camera={{ position: [0, 15, 20], fov: 80 }}>
+                <Suspense fallback={null}>
+                    <Environment files="/hdrs/horn-koppe_spring_2k.hdr" background />
+                </Suspense>
+
+                <axesHelper args={[5]} />
+                <ambientLight intensity={0.3} />
+                <directionalLight position={[5, 10, 20]} intensity={0.3} castShadow />
+
+                <Suspense fallback={null}>
+                    {posList.map((pos, i) => (
+                        <RobotModel
+                            key={i}
+                            position={pos}
+                            index={i}
+                            minionRefs={minionRefs}
+                        />
+                    ))}
+                </Suspense>
+
+                <Suspense fallback={null}>
+                    <TextModel position={[-5, 13, 1]} char="영서야 안뇽" />
+                </Suspense>
+
+                <mesh position={[0, -0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[50, 50]} />
+                    <meshStandardMaterial />
                 </mesh>
 
-                {/* 조명 */}
-                <ambientLight intensity={0.3} />
-                <directionalLight position={[5, 10, 5]} intensity={1.5} castShadow />
-
-                {/* 박스 그룹 */}
-                <AnimatedBoxes />
-
-                <OrbitControls />
+                <OrbitControls target={[0, 10, 0]} />
             </Canvas>
+
+
         </div>
     );
 }
