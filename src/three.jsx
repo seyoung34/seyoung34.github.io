@@ -108,13 +108,22 @@ function TextModel({ position, char }) {
 }
 
 function BgmPlayer() {
+    useEffect(() => {
+        const audio = document.getElementById("bgm");
+        const playBgm = () => {
+            audio.play();
+            window.removeEventListener("click", playBgm);
+        };
+        window.addEventListener("click", playBgm);
+    }, []);
+
     return (
         <audio
-            src="/bgm/minions_bananasong.mp3"   // ✅ public 폴더 기준 경로
-            autoPlay
-            loop
-            controls={false}            // 🎧 숨기고 싶을 때 false
             id="bgm"
+            src="/bgm/minions_bananasong.mp3"
+            loop
+            preload="auto"
+            style={{ display: "none" }}
         />
     );
 }
