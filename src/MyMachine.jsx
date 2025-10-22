@@ -1,117 +1,126 @@
-import React, { useState, useEffect } from "react";
+// CardFlipScene.jsx
+import React, { useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, useTexture, Environment, Html } from "@react-three/drei";
+import * as THREE from "three";
+import { easing } from "maath"; // 매끄러운 회전용 (npm install maath)
 
-const symbols = [
-    { id: 1, img: "/images/ji1.jpg" },
-    { id: 2, img: "/images/ji2.jpg" },
-    { id: 3, img: "/images/ji3.jpg" },
-    { id: 4, img: "/images/ji4.jpg" },
-];
+function Card({
+    front = "/images/마법진.png",
+    back = "/images/ji3.jpg",
+    width = 2,
+    height = 3,
+    position = [0, 0, 0],
+}) {
+    const group = useRef();
+    const [flipped, setFlipped] = useState(false);
+    const targetRotation = useRef(0);
 
-const ITEM_HEIGHT = 200;
+    const [frontMap, backMap] = useTexture([front, back]);
+    frontMap.encoding = backMap.encoding = THREE.sRGBEncoding;
 
-function Reel({ spinning, stopIndex }) {
-    const [position, setPosition] = useState(0);
-    const [noTransition, setNoTransition] = useState(false);
+    const handleClick = (e) => {
+        e.stopPropagation();
+        const next = !flipped;
+        setFlipped(next);
+        targetRotation.current = next ? Math.PI : 0;
+    };
 
-    useEffect(() => {
-        if (spinning) {
-            const interval = setInterval(() => {
-                setPosition((prev) => {
-                    const next = prev + 10;
-                    const limit = symbols.length * ITEM_HEIGHT;
+    useFrame((_, delta) => {
+        if (!group.current) return;
+        const currentY = group.current.rotation.y;
+        group.current.rotation.y = THREE.MathUtils.lerp(currentY, targetRotation.current, delta * 6);
+    });
 
-                    // 🔥 부드러운 무한 루프 핵심 로직
-                    if (next >= limit) {
-                        // 순간적으로 transition 제거 후 위치 리셋
-                        setNoTransition(true);
-                        return next - limit;
-                    }
-                    return next;
-                });
-            }, 20);
-
-            return () => clearInterval(interval);
-        } else {
-            // 멈출 때는 해당 이미지 위치에 맞게 부드럽게 정렬
-            setNoTransition(false);
-            setPosition(stopIndex * ITEM_HEIGHT);
-        }
-    }, [spinning, stopIndex]);
-
-    // transition 동적으로 토글
-    const transitionClass = noTransition
-        ? ""
-        : "transition-transform duration-100 ease-linear";
+    const depth = 0.015;
 
     return (
-        <div className="relative w-48 h-[300px] overflow-hidden bg-black rounded-xl border-4 border-yellow-400">
-            <div
-                className={`${transitionClass}`}
-                style={{
-                    transform: `translateY(-${position}px)`,
-                }}
-                onTransitionEnd={() => {
-                    // transition 복귀
-                    if (noTransition) setNoTransition(false);
-                }}
-            >
-                {/* 이미지 세트 2배 렌더링 */}
-                {[...symbols, ...symbols].map((s, i) => (
-                    <div
-                        key={i}
-                        className="h-[200px] flex justify-center items-center"
-                    >
-                        <img
-                            src={s.img}
-                            alt="symbol"
-                            className="w-32 h-32 object-cover"
-                        />
-                    </div>
-                ))}
-            </div>
-        </div>
+        <group ref={group} position={position} onPointerDown={handleClick}>
+            {/* 앞면 */}
+            <mesh position={[0, 0, depth / 2]} castShadow receiveShadow>
+                <planeGeometry args={[width, height]} />
+                <meshPhysicalMaterial
+                    map={frontMap}
+                    clearcoat={1}
+                    clearcoatRoughness={0.6}
+                    metalness={0.1}
+                    roughness={0.75}
+                    reflectivity={0.3}
+                    envMapIntensity={0.4}
+                />
+            </mesh>
+
+            {/* 뒷면 */}
+            <mesh position={[0, 0, -depth / 2]} rotation={[0, Math.PI, 0]} castShadow >
+                <planeGeometry args={[width, height]} />
+                <meshPhysicalMaterial
+                    map={backMap}
+                    clearcoat={1}
+                    clearcoatRoughness={0.7}
+                    metalness={0.05}
+                    roughness={0.8}
+                    color="#f8f8f8"
+                />
+            </mesh>
+
+            {/* 테두리 */}
+            <lineSegments position={[0, 0, depth / 2 + 0.001]}>
+                <edgesGeometry args={[new THREE.PlaneGeometry(width, height)]} />
+                <lineBasicMaterial color="#FFD700" linewidth={1} />
+            </lineSegments>
+        </group>
     );
 }
 
-export default function MyMachine() {
-    const [spinning, setSpinning] = useState(false);
-    const [stopIndexes, setStopIndexes] = useState([0, 0, 0]);
-    const [winner, setWinner] = useState(false);
 
-    const spin = () => {
-        if (spinning) return;
-        setSpinning(true);
-        setWinner(false);
-
-        setTimeout(() => {
-            const results = [
-                Math.floor(Math.random() * symbols.length),
-                Math.floor(Math.random() * symbols.length),
-                Math.floor(Math.random() * symbols.length),
-            ];
-            setStopIndexes(results);
-            setSpinning(false);
-            setWinner(results.every((v) => v === results[0]));
-        }, 5000);
-    };
+export default function CardFlipScene() {
+    const imageList = ["/images/ji1.jpg", "/images/ji2.jpg", "/images/ji3.jpg", "/images/ji4.jpg"];
+    const positions = [
+        [-5, 0, 0],
+        [0, 0, 0],
+        [5, 0, 0],
+        [-2.5, 3.5, 0],
+        [2.5, 3.5, 0],
+    ];
 
     return (
-        <div className="flex flex-col justify-center items-center h-[90vh] bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
-            <h1 className="">예원슬롯</h1>
-            <div className="flex gap-4 mb-8">
-                {stopIndexes.map((idx, i) => (
-                    <Reel key={i} spinning={spinning} stopIndex={idx} />
-                ))}
-            </div>
-
-            <button
-                onClick={spin}
-                className="px-8 py-3 rounded-lg bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition"
+        <div className="w-full h-[90vh] bg-gradient-to-b from-gray-900 to-black relative">
+            <Canvas
+                shadows
+                camera={{ position: [0, 2.5, 7], fov: 45 }}
+                gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, outputEncoding: THREE.sRGBEncoding }}
             >
-                🎰 SPIN 🎰
-            </button>
+                <color attach="background" args={["#111"]} />
 
-            {winner && <p className="mt-4 text-green-400 text-2xl">WINNER!! 🎉</p>}
+                <ambientLight intensity={0.3} />
+                <directionalLight
+                    position={[5, 10, 5]}
+                    intensity={1.2}
+                    castShadow
+                    shadow-mapSize-width={2048}
+                    shadow-mapSize-height={2048}
+                    shadow-bias={-0.0015}
+                />
+                <Environment files="/hdrs/horn-koppe_spring_2k.hdr" background={false} />
+
+                {/* 매끄러운 바닥면 */}
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.6, 0]} receiveShadow>
+                    <planeGeometry args={[50, 50]} />
+                    <meshStandardMaterial color="#2b2b2b" roughness={0.9} metalness={0.1} />
+                </mesh>
+
+                {positions.map((pos, i) => (
+                    <Card key={i} position={pos} back={imageList[i % imageList.length]} />
+                ))}
+
+                <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.2} />
+            </Canvas>
+
+
+            {/* 📄 간단한 제목 UI */}
+            <div className="absolute bottom-6 w-full text-center text-white font-semibold tracking-wider text-lg opacity-70">
+                ✨ 3D Interactive Card Flip ✨
+            </div>
         </div>
     );
 }
