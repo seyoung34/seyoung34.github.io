@@ -1,6 +1,6 @@
 // App.jsx
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import { pages } from "./pageConfig";
 
 export default function App() {

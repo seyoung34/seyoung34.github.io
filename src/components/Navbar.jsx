@@ -1,6 +1,6 @@
 // Navbar.jsx
 import { Link } from "react-router-dom";
-import { pages } from "./pageConfig";
+import { pages } from "../app/pageConfig";
 
 export default function Navbar() {
   return (

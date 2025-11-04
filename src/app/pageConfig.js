@@ -1,10 +1,10 @@
 // pageConfig.js
-import Home from "./Home";
-import ForJang from "./ForJang";
-import JiGame from "./JiGame";
-import SlotMachine from "./SlotMashine";
-import MyMachine from "./MyMachine";
-import Three from "./three";
+import Home from "../pages/Home";
+import ForJang from "../pages/ForJang";
+import JiGame from "../pages/JiGame";
+import SlotMachine from "../pages/SlotMashine";
+import MyMachine from "../pages/MyMachine";
+import Three from "../pages/three";
 
 export const pages = [
   { path: "/", label: "Home", Component: Home },

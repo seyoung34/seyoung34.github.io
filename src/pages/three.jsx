@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useHelper } from "@react-three/drei";
 import * as THREE from "three";
-import Lion from "./Lion";
-import Minion from "./Minion";
+import Lion from "../components/Lion";
+import Minion from "../components/Minion";
 
 /* ------------------------------------------
    🎛️ 보조 함수
