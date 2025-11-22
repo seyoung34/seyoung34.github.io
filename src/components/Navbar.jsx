@@ -16,7 +16,7 @@ export default function Navbar() {
             </li>
           ))}
           <a
-            href="https://seyoung34.github.io/badminton-racket-website/"
+            href="https://seyoung34.github.io/badminton-Racket-Website/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-400"
