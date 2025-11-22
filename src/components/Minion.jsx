@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { rule3 } from "../pages/three";
+import { rule3 } from "../pages/LionMap";
 
 
 export default function Minion({ mouse }) {

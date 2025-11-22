@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const images = ["/images/ji1.jpg", "/images/ji2.jpg", "/images/ji3.jpg", "/images/ji4.jpg"];
+const images = ["../images/ji1.jpg", "../images/ji2.jpg", "../images/ji3.jpg", "../images/ji4.jpg"];
 
 // 카드 데이터 초기화 (8장: 4종 × 2장)
 const shuffleCards = () => {

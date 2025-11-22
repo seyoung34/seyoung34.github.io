@@ -161,7 +161,7 @@ function Card({
 }
 
 // ✅ 씬 전체
-export default function CardFlipScene() {
+export default function CardGame() {
     const imageList = ["/images/ji1.jpg", "/images/ji2.jpg", "/images/ji3.jpg", "/images/ji4.jpg"];
     const positions = [
         [-5, 0, 0],
@@ -196,7 +196,7 @@ export default function CardFlipScene() {
                     <Card key={i} position={pos} back={imageList[i % imageList.length]} />
                 ))}
 
-                <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.2} />
+                <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.2} minPolarAngle={Math.PI / 3} />
             </Canvas>
 
             <div className="absolute bottom-6 w-full text-center text-white font-semibold tracking-wider text-lg opacity-70">
