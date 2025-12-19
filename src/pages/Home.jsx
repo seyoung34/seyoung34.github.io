@@ -3,28 +3,43 @@ import { OrbitControls, useHelper, Stars, Stats } from "@react-three/drei";
 import * as THREE from "three";
 import { useRef, useMemo, } from "react";
 
-function Sphere({ position = [0, 0, 0], args = [2, 1] }) {
+function Sphere({ position = [0, 0, 0], args = [2, 1], line = false }) {
 
   const sphereRef = useRef();
+  const wire = useRef();
 
   useFrame((_, delta) => {
     sphereRef.current.rotation.y += delta * 0.4;
-  })
+    if (line && wire.current) {
+      wire.current.rotation.y += delta * 0.4;
+    }
+  });
+
+
 
   return (
-    <mesh ref={sphereRef} position={position}>
-      <icosahedronGeometry args={args} />
-      <meshStandardMaterial
-        color="#00ff00"
-        metalness={0.4}
-        roughness={0.5}
-        emissive={"#0000ff"}
-        emissiveIntensity={0.3}
-        transparent={true}
-        opacity={1}
-        flatShading={true}
-      />
-    </mesh>
+    <group>
+      <mesh ref={sphereRef} position={position}>
+        <icosahedronGeometry args={args} />
+        <meshStandardMaterial
+          color="#00ff00"
+          metalness={0.4}
+          roughness={0.5}
+          emissive={"#0000ff"}
+          emissiveIntensity={0.3}
+          transparent={true}
+          opacity={1}
+          flatShading={true}
+        />
+      </mesh>
+
+      {line && <group ref={wire}>
+        <lineSegments>
+          <edgesGeometry args={[new THREE.IcosahedronGeometry(2.1, 1)]} />
+          <lineBasicMaterial color="#fafafa55" />
+        </lineSegments>
+      </group>}
+    </group>
   );
 }
 
@@ -136,7 +151,7 @@ export default function Home() {
         {/* <Stars radius={100} saturation={0.2} speed={0.5} fade /> */}
         <FloatingParticles />
 
-        <Sphere position={[0, 0, 0]} />
+        <Sphere position={[0, 0, 0]} line={true} />
         <Satellite />
         <Satellite />
         <Satellite />

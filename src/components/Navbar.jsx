@@ -15,15 +15,6 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
-          <a
-            href="https://seyoung34.github.io/badminton-Racket-Website/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-blue-400"
-          >
-            라켓 웹사이트로 이동
-          </a>
-
 
         </ul>
       </div>
